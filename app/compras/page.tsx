@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import PurchaseForm from '@/components/purchase-form'
-import PurchaseTable from '@/components/purchase-table'
 
 export default function ComprasPage() {
   const [showForm, setShowForm] = useState(false)
@@ -24,12 +22,14 @@ export default function ComprasPage() {
             <CardTitle>Nova Compra</CardTitle>
           </CardHeader>
           <CardContent>
-            <PurchaseForm onSuccess={() => setShowForm(false)} />
+            <p>Formulário de compras em construção...</p>
           </CardContent>
         </Card>
       )}
 
-      <PurchaseTable />
+      <div>
+        <p>Tabela de compras em construção...</p>
+      </div>
     </div>
   )
 }
