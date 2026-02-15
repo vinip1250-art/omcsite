@@ -1,0 +1,24 @@
+
+// ADICIONE ESTES 2 MODELS NO SEU prisma/schema.prisma:
+
+// Contas (Miri, Vini, Lindy, etc)
+model Account {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   @default("PERSON") // PERSON ou BUSINESS
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Lojas/Clubes (Fast Shop, Casas Bahia, PagBank, etc)
+model Store {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// MANTENHA PointsProgram como está (sem o campo store)
+// Ele representa apenas o programa de pontos (Esfera, Livelo, Smiles, etc)

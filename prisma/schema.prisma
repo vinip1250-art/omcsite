@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products  Product[]
+  purchases Purchase[]
+  stocks    Stock[]
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  model     String
+  storage   String
+  color     String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  purchases Purchase[]
+  stock     Stock?
+
+  @@index([userId])
+}
+
+model Purchase {
+  id               String    @id @default(cuid())
+  productId        String
+  userId           String
+  
+  purchaseDate     DateTime
+  deliveryDate     DateTime?
+  orderNumber      String?
+
+  paidValue        Float
+  shipping         Float     @default(0)
+  advanceDiscount  Float     @default(0)
+  cashback         Float     @default(0)
+  points           Float     @default(0)
+  thousand         Float     @default(0)
+  finalCost        Float
+
+  account          String
+  clubAndStore     String
+  pointsPerReal    Float     @default(0)
+  pointsReceived   Boolean   @default(false)
+
+  status           String    @default("PENDING")
+
+  soldValue        Float?
+  saleDate         DateTime?
+  customer         String?
+  serialNumber     String?
+  month            String?
+  profit           Float?
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  product          Product   @relation(fields: [productId], references: [id])
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([productId])
+  @@index([status])
+  @@index([purchaseDate])
+}
+
+model Stock {
+  id              String   @id @default(cuid())
+  productId       String   @unique
+  
+  onTheWay        Int      @default(0)
+  inStock         Int      @default(0)
+  averageCost     Float    @default(0)
+  totalValue      Float    @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userId          String
+  product         Product  @relation(fields: [productId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

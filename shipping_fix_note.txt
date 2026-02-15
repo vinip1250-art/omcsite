@@ -1,0 +1,16 @@
+// No componente PurchaseTable, ao abrir o dialog de editar:
+
+const openEditDialog = (purchase) => {
+  setEditingPurchase(purchase)
+  setEditForm({
+    purchaseDate: purchase.purchaseDate ? new Date(purchase.purchaseDate).toISOString().split('T')[0] : '',
+    paidValue: purchase.paidValue,
+    freight: purchase.shipping || 0,  // <-- USAR shipping do banco
+    advanceDiscount: purchase.advanceDiscount || 0,
+    points: purchase.points || 0,
+    cashback: purchase.cashback || 0,
+    finalCost: purchase.finalCost || 0,
+    clubAndStore: purchase.clubAndStore || '',
+    account: purchase.account || 'Miri'
+  })
+}

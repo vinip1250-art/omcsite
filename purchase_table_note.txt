@@ -1,0 +1,28 @@
+// No handleStatusChange, remover o deliveryDate do body:
+
+const handleStatusChange = async (purchaseId, newStatus) => {
+  if (!confirm(`Confirma a mudança de status para ${STATUS_LABELS[newStatus]}?`)) return
+
+  setUpdating(purchaseId)
+
+  try {
+    const response = await fetch(`/api/purchases/${purchaseId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        status: newStatus
+        // Remover deliveryDate - deixar a API setar automaticamente
+      })
+    })
+
+    if (response.ok) {
+      onUpdate()
+    } else {
+      alert('Erro ao atualizar')
+    }
+  } catch (error) {
+    alert('Erro ao atualizar')
+  } finally {
+    setUpdating(null)
+  }
+}

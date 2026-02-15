@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo de Produto (iPhone models)
+model Product {
+  id        String     @id @default(cuid())
+  name      String     @unique // "13 128 Branco"
+  model     String     // "13"
+  storage   String     // "128"
+  color     String     // "Branco"
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  purchases Purchase[]
+  stock     Stock?
+  
+  @@index([model, storage, color])
+}
+
+// Modelo de Compra
+model Purchase {
+  id              String    @id @default(cuid())
+  productId       String
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Datas
+  purchaseDate    DateTime
+  deliveryDate    DateTime?
+  orderNumber     String?
+  
+  // Financeiro
+  paidValue       Float
+  account         String    // "Miri", "Vini", etc.
+  shipping        Float     @default(0)
+  advanceDiscount Float     @default(0)
+  
+  // Pontos/Milhas
+  pointsReceived  Boolean   @default(false)
+  points          Int       @default(0)
+  thousand        Int       @default(0) // Milheiro
+  cashback        Float     @default(0)
+  clubAndStore    String?   // "CB/Azul"
+  pointsPerReal   Int       @default(0)
+  
+  // Cálculo (computado automaticamente)
+  finalCost       Float
+  
+  // Venda
+  soldValue       Float?
+  saleDate        DateTime?
+  month           String?   // "ABR25"
+  customer        String?
+  profit          Float?
+  
+  // Status
+  status          PurchaseStatus @default(PENDING)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([purchaseDate])
+  @@index([status])
+  @@index([account])
+  @@index([month])
+}
+
+enum PurchaseStatus {
+  PENDING      // Aguardando entrega
+  DELIVERED    // Entregue, em estoque
+  SOLD         // Vendido
+  CANCELLED    // Cancelado
+}
+
+// Modelo de Estoque
+model Stock {
+  id                    String   @id @default(cuid())
+  productId             String   @unique
+  product               Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  onTheWay              Int      @default(0)
+  averageUnitCost       Float    @default(0)
+  inStock               Int      @default(0)
+  averageStockCost      Float    @default(0)
+  totalInStock          Float    @default(0)
+  
+  updatedAt             DateTime @updatedAt
+  
+  @@index([productId])
+}
+
+// Programas de Pontos/Milhas
+model PointsProgram {
+  id        String          @id @default(cuid())
+  name      String          @unique // "Esfera", "Livelo", "Smiles", "AA"
+  storeId   String?  // <-- ADICIONE ESTA LINHA
+  store     Store?   @relation(fields: [storeId], references: [id]) // <-- ADICIONE ESTA LINHA
+  type      String          // "points" ou "miles"
+  active    Boolean         @default(true)
+  createdAt DateTime        @default(now())
+
+  accounts  PointsAccount[]
+}
+
+// Contas de Pontos/Milhas
+model PointsAccount {
+  id              String         @id @default(cuid())
+  programId       String
+  program         PointsProgram  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  accountName     String         // "Miri", "Vini", "Lindy", "Milla", "Tony"
+  balance         Float          @default(0)
+  pointsToReceive Float          @default(0)
+  
+  updatedAt       DateTime       @updatedAt
+  
+  @@unique([programId, accountName])
+  @@index([accountName])
+}
+
+// Relatório Mensal (gerado automaticamente)
+model MonthlyReport {
+  id              String   @id @default(cuid())
+  month           String   @unique // "JAN25", "FEV25"
+  year            Int
+  monthNumber     Int      // 1-12
+  
+  investment      Float    @default(0)
+  revenue         Float    @default(0)
+  discount        Float    @default(0) // Deságio
+  discountPercent Float    @default(0)
+  profit          Float    @default(0)
+  profitPercent   Float    @default(0)
+  
+  totalPurchases  Int      @default(0)
+  totalSales      Int      @default(0)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([year, monthNumber])
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   @default("PERSON")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Contas (Miri, Vini, Lindy, etc)
+model Account {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   @default("PERSON")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Lojas/Clubes (Fast Shop, Casas Bahia, PagBank, etc)
+model Store {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  programs  PointsProgram[]
+}
