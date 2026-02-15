@@ -35,8 +35,8 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   purchases Purchase[]
   stock     Stock?
@@ -78,8 +78,8 @@ model Purchase {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  product          Product   @relation(fields: [productId], references: [id])
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([productId])
@@ -88,20 +88,20 @@ model Purchase {
 }
 
 model Stock {
-  id              String   @id @default(cuid())
-  productId       String   @unique
+  id          String @id @default(cuid())
+  productId   String @unique
   
-  onTheWay        Int      @default(0)
-  inStock         Int      @default(0)
-  averageCost     Float    @default(0)
-  totalValue      Float    @default(0)
+  onTheWay    Int    @default(0)
+  inStock     Int    @default(0)
+  averageCost Float  @default(0)
+  totalValue  Float  @default(0)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  userId          String
-  product         Product  @relation(fields: [productId], references: [id])
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -116,8 +116,8 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([name])
   @@index([userId])
@@ -145,8 +145,8 @@ model Store {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([name])
   @@index([userId])
@@ -162,9 +162,9 @@ model PointsAccount {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  program   Program @relation(fields: [programId], references: [id])
+  userId  String
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program Program @relation(fields: [programId], references: [id])
 
   @@index([userId])
   @@index([programId])
