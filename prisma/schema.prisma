@@ -16,12 +16,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  products  Product[]
-  purchases Purchase[]
-  stocks    Stock[]
-  accounts  Account[]
-  programs  Program[]
-  stores    Store[]
+  products       Product[]
+  purchases      Purchase[]
+  stocks         Stock[]
+  accounts       Account[]
+  programs       Program[]
+  stores         Store[]
+  pointsAccounts PointsAccount[]
 }
 
 model Product {
@@ -129,8 +130,9 @@ model Program {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsAccounts PointsAccount[]
 
   @@index([name])
   @@index([userId])
@@ -148,4 +150,23 @@ model Store {
 
   @@index([name])
   @@index([userId])
+}
+
+model PointsAccount {
+  id              String   @id @default(cuid())
+  accountName     String
+  programId       String
+  currentPoints   Float    @default(0)
+  pointsToReceive Float    @default(0)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program   Program @relation(fields: [programId], references: [id])
+
+  @@index([userId])
+  @@index([programId])
+  @@index([accountName])
 }
