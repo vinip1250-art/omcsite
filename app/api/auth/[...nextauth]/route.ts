@@ -1,39 +1,35 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
-import bcrypt from "bcrypt"
+import NextAuth from 'next-auth'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { compare } from 'bcryptjs'
+import { prisma } from '@/lib/prisma'
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Senha", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email e senha são obrigatórios")
+          throw new Error('Credenciais inválidas')
         }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email }
         })
 
-        if (!user) {
-          throw new Error("Usuário não encontrado")
+        if (!user || !user.password) {
+          throw new Error('Usuário não encontrado')
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        )
+        const isValid = await compare(credentials.password, user.password)
 
-        if (!isPasswordValid) {
-          throw new Error("Senha incorreta")
+        if (!isValid) {
+          throw new Error('Senha incorreta')
         }
 
         return {
@@ -45,10 +41,10 @@ export const authOptions = {
     })
   ],
   session: {
-    strategy: "jwt"
+    strategy: 'jwt' as const
   },
   pages: {
-    signIn: "/auth/login",
+    signIn: '/auth/login'
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -59,7 +55,7 @@ export const authOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id
+        session.user.id = token.id as string
       }
       return session
     }
