@@ -19,6 +19,9 @@ model User {
   products  Product[]
   purchases Purchase[]
   stocks    Stock[]
+  accounts  Account[]
+  programs  Program[]
+  stores    Store[]
 }
 
 model Product {
@@ -112,7 +115,11 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([name])
+  @@index([userId])
 }
 
 model Program {
@@ -122,7 +129,11 @@ model Program {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([name])
+  @@index([userId])
 }
 
 model Store {
@@ -132,5 +143,9 @@ model Store {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([name])
+  @@index([userId])
 }
