@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const programs = await prisma.pointsProgram.findMany({
+    const programs = await prisma.program.findMany({
       orderBy: { name: 'asc' }
     })
     return NextResponse.json(programs)
