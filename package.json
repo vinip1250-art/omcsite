@@ -81,5 +81,6 @@
   "bugs": {
     "url": "https://github.com/vinip1250-art/omcsite/issues"
   },
-  "homepage": "https://github.com/vinip1250-art/omcsite#readme"
+  "homepage": "https://github.com/vinip1250-art/omcsite#readme",
+  "prisma": {}
 }
