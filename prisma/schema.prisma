@@ -1,6 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  previewFeatures = []
 }
 
 datasource db {
@@ -8,96 +9,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  products  Product[]
-  purchases Purchase[]
-  stocks    Stock[]
-}
-
-model Product {
+model Account {
   id        String   @id @default(cuid())
   name      String
-  model     String
-  storage   String
-  color     String
+  clubId    String?
+  storeId   String?
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  purchases Purchase[]
-  stock     Stock?
-
-  @@index([userId])
+  @@index([name])
 }
 
-model Purchase {
-  id               String    @id @default(cuid())
-  productId        String
-  userId           String
-  
-  purchaseDate     DateTime
-  deliveryDate     DateTime?
-  orderNumber      String?
+model Program {
+  id        String   @id @default(cuid())
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  paidValue        Float
-  shipping         Float     @default(0)
-  advanceDiscount  Float     @default(0)
-  cashback         Float     @default(0)
-  points           Float     @default(0)
-  thousand         Float     @default(0)
-  finalCost        Float
-
-  account          String
-  clubAndStore     String
-  pointsPerReal    Float     @default(0)
-  pointsReceived   Boolean   @default(false)
-
-  status           String    @default("PENDING")
-
-  soldValue        Float?
-  saleDate         DateTime?
-  customer         String?
-  serialNumber     String?
-  month            String?
-  profit           Float?
-
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  product          Product   @relation(fields: [productId], references: [id])
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([productId])
-  @@index([status])
-  @@index([purchaseDate])
+  @@index([name])
 }
 
-model Stock {
-  id              String   @id @default(cuid())
-  productId       String   @unique
-  
-  onTheWay        Int      @default(0)
-  inStock         Int      @default(0)
-  averageCost     Float    @default(0)
-  totalValue      Float    @default(0)
+model Store {
+  id        String   @id @default(cuid())
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  userId          String
-  product         Product  @relation(fields: [productId], references: [id])
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+  @@index([name])
 }
