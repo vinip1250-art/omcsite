@@ -24,10 +24,10 @@ export default async function RootLayout({
     <html lang="pt-BR">
       <body className={inter.className}>
         <AuthProvider session={session}>
-          {session && <NavMenu />}
-          <main className="min-h-screen bg-gray-50">
-            {children}
-          </main>
+          <div className="min-h-screen bg-gray-50">
+            <NavMenu />
+            <main>{children}</main>
+          </div>
         </AuthProvider>
       </body>
     </html>

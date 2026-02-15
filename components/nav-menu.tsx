@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 
 export default function NavMenu() {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   const links = [
     { href: '/', label: 'Dashboard' },
@@ -21,31 +22,34 @@ export default function NavMenu() {
     { href: '/relatorios', label: 'Relatórios' },
   ]
 
+  if (!session) return null
+
   return (
     <nav className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-bold">OMC Site</h1>
-            <div className="hidden md:flex space-x-2">
+            <h1 className="text-xl font-bold text-blue-600">OMC Site</h1>
+            <div className="hidden md:flex space-x-1">
               {links.map((link) => (
                 <Link key={link.href} href={link.href}>
-                  <span
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      pathname === link.href
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
+                  <span className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                    pathname === link.href
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}>
                     {link.label}
                   </span>
                 </Link>
               ))}
             </div>
           </div>
-          <Button onClick={() => signOut()} variant="outline" size="sm">
-            Sair
-          </Button>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">{session.user?.name}</span>
+            <Button onClick={() => signOut({ callbackUrl: '/auth/login' })} size="sm" variant="outline">
+              Sair
+            </Button>
+          </div>
         </div>
       </div>
     </nav>
