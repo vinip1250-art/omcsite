@@ -1,23 +1,37 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function PUT(request, { params }) {
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params
     const body = await request.json()
 
-    const program = await prisma.pointsProgram.update({
+    const program = await prisma.program.update({
       where: { id },
       data: {
         name: body.name,
-        store: body.store,
-        type: body.type,
         active: body.active
       }
     })
 
     return NextResponse.json(program)
   } catch (error) {
-    return NextResponse.json({ error: 'Erro ao atualizar' }, { status: 500 })
+    console.error('Erro ao atualizar programa:', error)
+    return NextResponse.json({ error: 'Erro ao atualizar programa' }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params
+
+    await prisma.program.delete({
+      where: { id }
+    })
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Erro ao deletar programa:', error)
+    return NextResponse.json({ error: 'Erro ao deletar programa' }, { status: 500 })
   }
 }
