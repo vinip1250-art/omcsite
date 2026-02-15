@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './api/auth/[...nextauth]/route'
+import { redirect } from 'next/navigation'
 import NavMenu from '@/components/nav-menu'
 import AuthProvider from '@/components/auth-provider'
 
@@ -25,7 +26,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <AuthProvider session={session}>
           <div className="min-h-screen bg-gray-50">
-            <NavMenu />
+            {session && <NavMenu />}
             <main>{children}</main>
           </div>
         </AuthProvider>
