@@ -1,0 +1,48 @@
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: omcprod-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: omcuser
+      POSTGRES_PASSWORD: gtDyXyC82cTMX9
+      POSTGRES_DB: omcprod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - omcprod-network
+
+  # Aplicação Next.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 18-alpine  # use 18 em vez de 20
+    container_name: omcprod-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://omcuser:gtDyXyC82cTMX9@postgres:5432/omcprod?schema=public
+      DIRECT_URL: postgresql://omcuser:gtDyXyC82cTMX9@postgres:5432/omcprod?schema=public
+      NEXTAUTH_SECRET: o++Xo8Hz+KnBwr741ObQls6qbgdeyYmXjnq39a184lY=
+      NEXTAUTH_URL: https://gestao.004123.xyz
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - omcprod-network
+    volumes:
+      - ./.env:/app/.env:ro
+
+
+volumes:
+  postgres_data:
+
+networks:
+  omcprod-network:
+    driver: bridge
