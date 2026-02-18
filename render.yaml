@@ -3,7 +3,7 @@ services:
     name: omcsite
     runtime: node
     buildCommand: npm install && prisma generate && next build
-    startCommand: prisma migrate deploy && next start -p $PORT
+    startCommand: startCommand: next start -p $PORT
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,5 +17,4 @@ services:
         sync: false
       - key: NEXT_TELEMETRY_DISABLED
         value: 1
-       - key: PORT
-        sync: false  
+
