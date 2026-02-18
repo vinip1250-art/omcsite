@@ -39,20 +39,12 @@ RUN apk add --no-cache openssl libssl3
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copia tudo necessário
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# 👇 ESSA É A PARTE IMPORTANTE
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 
 USER nextjs
-
-EXPOSE 10000
-
-ENV PORT 10000
-ENV HOSTNAME "0.0.0.0"
 
 CMD ["sh", "-c", "node prisma/migrate.js && node server.js"]
