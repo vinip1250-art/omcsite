@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: omcuser
-      POSTGRES_PASSWORD: gtDyXyC82cTMX9
+      POSTGRES_PASSWORD: senha
       POSTGRES_DB: omcprod
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -27,8 +27,8 @@ services:
     environment:
       DATABASE_URL: postgresql://omcuser:gtDyXyC82cTMX9@postgres:5432/omcprod?schema=public
       DIRECT_URL: postgresql://omcuser:gtDyXyC82cTMX9@postgres:5432/omcprod?schema=public
-      NEXTAUTH_SECRET: o++Xo8Hz+KnBwr741ObQls6qbgdeyYmXjnq39a184lY=
-      NEXTAUTH_URL: https://gestao.004123.xyz
+      NEXTAUTH_SECRET: senhasecreta
+      NEXTAUTH_URL: http://localhost:3000
       NODE_ENV: production
     ports:
       - "3000:3000"
