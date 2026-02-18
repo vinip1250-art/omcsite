@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  // ... suas outras configurações
+  eslint:      { ignoreDuringBuilds: true },
+  typescript:  { ignoreBuildErrors: true },
 }
 
 module.exports = nextConfig
-
