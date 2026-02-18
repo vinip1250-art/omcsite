@@ -34,24 +34,18 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Instale OpenSSL no runner também
 RUN apk add --no-cache openssl libssl3
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Crie a estrutura de diretórios
-RUN mkdir -p .next public
-
-# Copie public
+# Copia tudo necessário
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Copie o standalone build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copie prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+# 👇 ESSA É A PARTE IMPORTANTE
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 
 USER nextjs
