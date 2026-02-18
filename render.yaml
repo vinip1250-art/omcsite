@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: omcsite
+    name: omcgestao
     runtime: node
-    buildCommand: npm install && prisma generate && next build
+    buildCommand: npm install && prisma generate && prisma migrate deploy && next build
     startCommand: next start -p $PORT
     envVars:
       - key: NODE_ENV
