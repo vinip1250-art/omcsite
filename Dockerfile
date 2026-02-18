@@ -21,7 +21,7 @@ RUN mkdir -p public
 RUN apk add --no-cache openssl
 
 # Gerar Prisma Client
-RUN npx prisma generate
+RUN npx prisma generate --schema=./prisma/schema.prisma
 
 # Build da aplicação
 ENV NEXT_TELEMETRY_DISABLED 1
