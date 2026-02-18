@@ -50,9 +50,9 @@ COPY --from=builder /app/prisma ./prisma
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 10000
 
-ENV PORT 3000
+ENV PORT 10000
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["sh", "-c", "node prisma/migrate.js && node server.js"]
