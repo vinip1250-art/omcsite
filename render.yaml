@@ -19,3 +19,5 @@ services:
         sync: false
       - key: NEXT_TELEMETRY_DISABLED
         value: 1
+      - key: PORT
+        value: 3000
