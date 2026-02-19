@@ -3,7 +3,7 @@ services:
     name: omcgestao
     runtime: node
     buildCommand: npm install && prisma generate && prisma migrate deploy && next build
-    startCommand: next start -p $PORT
+    startCommand: next start -p
     envVars:
       - key: NODE_VERSION
         value: 22.x
@@ -15,9 +15,6 @@ services:
         sync: false
       - key: NEXTAUTH_SECRET
         sync: false
-      - key: NEXTAUTH_URL
-        sync: false
       - key: NEXT_TELEMETRY_DISABLED
         value: 1
-      - key: PORT
-        value: 3000
+
